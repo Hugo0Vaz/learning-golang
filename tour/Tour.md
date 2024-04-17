@@ -145,10 +145,288 @@ const (
 
 ## Flow control statements: for , if, else, switch and defer
 
+### For
+
+Go has only one looping construct, the `for` loop. 
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+    sum := 0
+    for i := 0; i < 10; i++ {
+	sum += i
+    }
+    fmt.Println(sum)
+}
+```
+The for loop contains three sections:
+- The first that is executed in the first time the loop runs in the example: `i := 0`.
+- The second is the condition expression that is evaluated every interation, in the example: `i < 10`.
+- The third is the post statement, executed at the end of every iteration, in the example: `i++`.
+
+### For continued
+
+The first and third statements are optional.
+
+### For is Go's "while"
+
+Since the first and third statements are optional, if we drop the semicolons we can make the for contruct our while loop.
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	sum := 1
+	for sum < 1000 {
+		sum += sum
+	}
+	fmt.Println(sum)
+}
+```
+### Forever
+
+If you omit the second statements what is left is infinite loop.
+
+```go
+package main
+
+func main() {
+	for {
+	}
+}
+```
+
+### If
+
+Go's if statements don't need surrouding `()`.
+
+```go
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+func sqrt(x float64) string {
+	if x < 0 {
+		return sqrt(-x) + "i"
+	}
+	return fmt.Sprint(math.Sqrt(x))
+}
+
+func main() {
+	fmt.Println(sqrt(2), sqrt(-4))
+}
+```
+
+### If with a short statement
+
+Like `for`, the `if` statement can start with a short statement to execute before the condition.
+
+```go
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+func pow(x, n, lim float64) float64 {
+	if v := math.Pow(x, n); v < lim {
+		return v
+	}
+	return lim
+}
+
+func main() {
+	fmt.Println(
+		pow(3, 2, 10),
+		pow(3, 3, 20),
+	)
+}
+```
+### If and else
+
+Variables declared inside an `if` short statement are also available inside any of the `else` blocks.
+
+```go
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+func pow(x, n, lim float64) float64 {
+	if v := math.Pow(x, n); v < lim {
+		return v
+	} else {
+		fmt.Printf("%g >= %g\n", v, lim)
+	}
+	// can't use v here, though
+	return lim
+}
+
+func main() {
+	fmt.Println(
+		pow(3, 2, 10),
+		pow(3, 3, 20),
+	)
+}
+```
+
+### Exercise: Loops and Functions
+
+- exercise-loops-and-function.go
+
+### Switch
+
+Switch statements in Go are like in any other language, the only difference being that only the matched case ir run therefore not needing the `break` keyword.
+
+### Switch with no condition
+
+Switch without condition is the same as `switch true`.
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	t := time.Now()
+	switch {
+	case t.Hour() < 12:
+		fmt.Println("Good morning!")
+	case t.Hour() < 17:
+		fmt.Println("Good afternoon.")
+	default:
+		fmt.Println("Good evening.")
+	}
+}
+```
+
+### Defer
+
+A `defer` statement defers the execution of a function until the surrouding function returns.
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	defer fmt.Println("world")
+
+	fmt.Println("hello")
+}
+```
+
+### Stacking defers
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("counting")
+
+	for i := 0; i < 10; i++ {
+		defer fmt.Println(i)
+	}
+
+	fmt.Println("done")
+}
+```
+
 ## More types: structs, slices and maps
 
-# Methods and Interfaces
+### Pointers
 
-# Generics
+Go has pointers. A pointer holds the memory address of a value.
 
-# Concurrency
+The `&` operator generates a points to its operand.
+
+```go
+i := 42
+p = &i
+```
+
+The `*` operator denotes the pointer's undelying value.
+
+```go
+fmt.Println(*p) // read i through the pointer p
+*p = 21         // set i through the pointer p
+```
+
+### Structs
+
+A `struct` is a collection of fields.
+
+```go
+package main
+
+import "fmt"
+
+type Vertex struct {
+	X int
+	Y int
+}
+
+func main() {
+	fmt.Println(Vertex{1, 2})
+}
+```
+
+### Struct Fields
+
+Fields are accessed with `.` (dot) notation.
+
+```go
+package main
+
+import "fmt"
+
+type Vertex struct {
+	X int
+	Y int
+}
+
+func main() {
+	v := Vertex{1, 2}
+	v.X = 4
+	fmt.Println(v.X)
+}
+```
+
+### Pointers to structs
+
+Struct fields can be accessed through a struct pointer.
+
+```go
+package main
+
+import "fmt"
+
+type Vertex struct {
+	X int
+	Y int
+}
+
+func main() {
+	v := Vertex{1, 2}
+	p := &v
+	p.X = 1e9
+	fmt.Println(v)
+}
+
+```
