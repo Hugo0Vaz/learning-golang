@@ -430,3 +430,135 @@ func main() {
 }
 
 ```
+
+### Struct Literals
+
+A struct literal denotes a newly allocated struct value by listing the values of its fields.
+
+```go
+package main
+
+import "fmt"
+
+type Vertex struct {
+	X, Y int
+}
+
+var (
+	v1 = Vertex{1, 2}  // has type Vertex
+	v2 = Vertex{X: 1}  // Y:0 is implicit
+	v3 = Vertex{}      // X:0 and Y:0
+	p  = &Vertex{1, 2} // has type *Vertex
+)
+
+func main() {
+	fmt.Println(v1, p, v2, v3)
+}
+```
+
+### Arrays
+
+The type `[n]T` is an array of `n` values of type `T`
+
+The number of items in the array is a part of it's type.
+
+### Slices
+
+An array is of fixed sizes, but slices are dinamically-sized, flexible view into the contents of the fixed array.
+
+The type `[]T` is an slice with elements of type `T`.
+
+`a[low : high]`
+
+### Slices are like references to arrays
+
+A slice does not store any data, it just describes a section of an underlying array.
+
+Changing the elements of a slice modifies the corresponding elements of its underlying array.
+
+Other slices that share the same underlying array will see those changes.
+
+### Slice literals
+
+A slice literal is like an array literal without the length.
+
+This is an array literal:
+
+```go
+[3]bool{true, true, false}
+```
+And this creates the same array as above, then builds a slice that references it:
+
+```go
+[]bool{true, true, false}
+```
+
+### Slice defaults
+
+When slicing, you may omit the high or low bounds to use their defaults instead.
+
+### Slice lenght and capacity
+
+Slices have lenght and capacity.
+
+- Capacity: the capacity of a slice is the number of elements in the underlying array, counting from the first element in the slice.
+- Lenght: the length of a slice is the number of elements it contains.
+
+The length and capacity of a slice s can be obtained using the expressions len(s) and cap(s).
+
+### Nil slices
+
+The zero value of a slice is nil.
+
+A nil slice has a length and capacity of 0 and has no underlying array.
+
+### Creating a slice with make
+
+The `make` function allocates a zeroed array and returns  a slice that refers  to that array.
+
+`a := make([]int, 5)`
+
+### Slices of slices
+
+Slices can contain any type, including other slices.
+
+### Appending to slices
+
+It is common to append new elements to a slice, and so Go provides a built-in append function. The documentation of the built-in package describes append.
+
+```go
+func append(s []T, vs ...T) []T
+```
+The resulting value of append is a slice containing all the elements of the original slice plus the provided values.
+
+If the backing array of s is too small to fit all the given values a bigger array will be allocated. The returned slice will point to the newly allocated array.
+
+### Range
+
+The `range` form of the `for` loop iterates over a slice or map.
+
+When ranging over a slice, two values are returned for each iteration. The first is the index, and the second is a copy of the element at that index.
+
+```go
+package main
+
+import "fmt"
+
+var pow = []int{1, 2, 4, 8, 16, 32, 64, 128}
+
+func main() {
+	for i, v := range pow {
+		fmt.Printf("2**%d = %d\n", i, v)
+	}
+}
+```
+
+### Range continued
+
+You can skip the index or value by assigning to `_`.
+
+```go
+for i, _ := range pow
+for _, value := range pow
+```
+
