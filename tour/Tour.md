@@ -562,3 +562,6 @@ for i, _ := range pow
 for _, value := range pow
 ```
 
+### Exercise: Slices
+
+Implement `Pic`. It should return 
