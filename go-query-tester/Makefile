@@ -1,5 +1,6 @@
 run:
-	@go run main.go
+	@./b
 
 build:
 	@go build
+	@mv ./go-query-tester ./bin/gqt
