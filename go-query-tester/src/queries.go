@@ -1,9 +1,10 @@
-package pkg
+package src
 
 import (
 	"bufio"
 	"os"
 	"path/filepath"
+	"regexp"
 )
 
 type Query struct {
@@ -11,7 +12,7 @@ type Query struct {
 	QueryString string
 }
 
-func getQueriesFromPath(path string) ([]Query, error) {
+func GetQueriesFromPath(path string) ([]Query, error) {
 	info, err := os.Stat(path)
 
 	if err != nil {
@@ -74,28 +75,16 @@ func getQueriesFromFile(path string) ([]Query, error) {
 
 	scanner := bufio.NewScanner(file)
 
-	// not reconized linetype -> 0
-	// comment line linetype -> 1
-	// query line linetype -> 2
-	lastLineType := 0
-	lastLineContent := ""
+	var queries []Query
 
 	for scanner.Scan() {
 		line := scanner.Text()
 
-		lineType, lineContent, err := parseLine(line)
-
-		if err != nil {
+		if !getLineMatch(line) {
 			continue
 		}
 
-		if lineType == 1 && lastLineType == 1 {
-			lastLineContent := append(lastLineContent, lineContent)
-		} else if lineType == 2 && lastLineType == 2 {
-			lastLineContent := append(lastLineContent, lineContent)
-		} else if lineType == 2 && lastLineType == 1 {
-
-		}
+		queries = append(queries, Query{Comment: "...", QueryString: line})
 
 	}
 
@@ -103,5 +92,12 @@ func getQueriesFromFile(path string) ([]Query, error) {
 		return nil, err
 	}
 
-	return nil, nil
+	return queries, nil
+}
+
+func getLineMatch(line string) bool {
+	queryPattern := `(?i)^\s*(SELECT|INSERT|UPDATE|DELETE|CREATE|ALTER|DROP|TRUNCATE|REPLACE|MERGE).+?;`
+	queryRegexp := regexp.MustCompile(queryPattern)
+
+	return queryRegexp.MatchString(line)
 }

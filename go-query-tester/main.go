@@ -1,9 +1,9 @@
 package main
 
 import (
-	"Hugo0Vaz/go-query-tester/cmd"
+	"Hugo0Vaz/go-query-tester/src"
 )
 
 func main() {
-	cmd.ParseArgs()
+	src.ParseArgs()
 }
