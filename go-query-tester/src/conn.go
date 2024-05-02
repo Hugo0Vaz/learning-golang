@@ -70,3 +70,9 @@ func newMysqlConnection(config MySqlDBConfig) (*sql.DB, error) {
 
 	return db, nil
 }
+
+func pingTest(db *sql.DB) error {
+
+	return nil
+
+}
